@@ -198,7 +198,6 @@ WHERE Company LIKE 'Ada%' AND industry = 'Support';
 ```sql
 DESCRIBE layoffs_clean;
 ```
-- **Result**
 
 ### Step 2: Summary statistics for numerical columns
 - **Goal**:
@@ -232,9 +231,9 @@ SELECT
 FROM layoffs_clean;
 ```
 
-- **Result**
+- **INSIGHT**
 
-### Step 2 : Summary statistics for categorical columns
+### Step 3 : Summary statistics for categorical columns
 - **Goal**:
 - SQL Codes
 ```sql
@@ -255,15 +254,125 @@ FROM layoffs_clean
 GROUP BY stage
 ORDER BY frequency DESC;
 ```
-- **Result**
+- **INSIGHT**
 
-### Step : 
+### Step 4 : Missing data overview 
 - **Goal**:
 - SQL Code
+```sql
+SELECT 
+	SUM(
+		CASE 
+			WHEN Laid_Off_Count IS NULL THEN 1 
+            ELSE 0
+		END) AS missing_layoff_count,
+	SUM(
+		CASE 
+			WHEN percentage IS NULL THEN 1 
+            ELSE 0
+		END) AS missing_percentage,
+	SUM(
+		CASE 
+			WHEN Funds_Raised IS NULL THEN 1 
+            ELSE 0
+		END) AS fund_raised_missing,
+	SUM(
+		CASE 
+			WHEN company IS NULL THEN 1 
+            ELSE 0
+		END) AS missing_company,
+	SUM(
+		CASE 
+			WHEN industry IS NULL THEN 1 
+            ELSE 0
+		END) AS missing_industry,
+	SUM(
+		CASE 
+			WHEN country IS NULL THEN 1 
+            ELSE 0
+		END) AS country,
+	SUM(
+		CASE 
+			WHEN `Date` IS NULL THEN 1 
+            ELSE 0
+		END) AS missing_date
+FROM layoffs_clean;
 ```
-```
-- **Result**
+- **INSIGHT**
 
+
+### Step 5: Frequency analysis & grouping
+- **Goal**:
+- SQL Code for top 10 companies by total layoffs
+```sql
+SELECT Company, SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean
+GROUP BY Company
+ORDER BY total_laid_off DESC
+LIMIT 10;
+```
+- SQL Code for top 10 countries by total layoffs
+```sql
+SELECT country, SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean
+GROUP BY country
+ORDER BY total_laid_off DESC
+LIMIT 10;
+```
+- SQL Code for top 10 industries by total layoffs
+```sql
+SELECT industry, SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean
+GROUP BY Industry
+ORDER BY total_laid_off DESC
+LIMIT 10;
+
+```
+- **INSIGHT**
+
+### Step 6:  Data anaylsis (Layoff date)
+- **Goal**:
+- SQL Code for layoff per year
+```sql
+SELECT YEAR(`Date`) AS year, SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean
+GROUP BY YEAR(`Date`) 
+ORDER BY 1;
+```
+- SQL Code for layoff per month
+```sql
+SELECT YEAR(`Date`) AS year,  MONTH(`Date`) AS month_num, SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean
+GROUP BY YEAR(`Date`), MONTH(`Date`)
+ORDER BY 1;
+```
+- SQL Code for cummulative layoffs over time (Monthly)
+```sql
+WITH layoffs_clean_CTE AS
+(
+SELECT YEAR(`Date`) AS year, MONTH(`Date`) AS month_num, SUM(Laid_Off_Count) AS total_laid_off 
+FROM layoffs_clean
+GROUP BY YEAR(`Date`), MONTH(`Date`)
+ORDER BY 1
+)
+SELECT *, SUM(total_laid_off) OVER(ORDER BY `year`, `month_num` )
+FROM layoffs_clean_CTE;
+```
+- **INSIGHT**
+
+### Step 7: Outlier detection
+- **Goal**: Unusally high single laid off count
+- SQL Code
+```sql
+ SELECT * 
+ FROM layoffs_clean
+ WHERE Laid_Off_Count > 5000
+ ORDER BY Laid_Off_CounT DESC;
+```
+- **INSIGHT**
+
+### Step :
+- **Goal**:
 
 
 
