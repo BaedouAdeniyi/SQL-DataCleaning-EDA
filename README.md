@@ -3,6 +3,7 @@
 ## Project Description
 This project demonstrates the process of cleaning and analyzing a dataset containing employee layoff information across various companies and countries. It includes SQL workflows for data cleaning, handling missing values, standardizing text and numeric columns, and performing exploratory data analysis (EDA) to uncover trends by company, industry, and country.
 
+
 ## Data Source
 The layoff dataset was collected from [Kaggle: Layoff Data](https://www.kaggle.com/datasets/theakhilb/layoffs-data-2022)
 It contains records of employee layoffs from various companies, industries, and countries.
@@ -25,18 +26,22 @@ The first few rows of the dataset provide a snapshot of the structure and type o
 | Aleph Farms	| Tel Aviv	| Food	| 30	| 05/06/2024	| https://www.calcalistech.com/ctechnews/article/hkdwxv0na	| 119	| Unknown	| 05/06/2024 23:13	| Israel	| 0.3	| Unknown |
 | MoonPay	| Dover	| Crypto	| 30	| 05/06/2024	| https://www.theblock.co/post/298638/moonpay-lays-off-10-staff	| 651	| Unknown	| 05/06/2024 23:12	| United States	| 0.1	| Unknown |
 
+
 ## Project Objectives
 - Clean and standardize the dataset to ensure accurate analysis
 - Handle missing and inconsistent data
 - Convert all columns to appropriate data types
 - Perform exploratory data analysis to identify trends and insights
 
+  
+
 ## Tools and Technologies
 - SQL (MySQL) for data cleaning and analysis
 - GitHub to host the project
 
-## Project Workflow
 
+## Project Workflow
+### **DATA CLEANING PROCESS**
 ### Step 1: View Raw Dataset
 - **Goal:** Inspect the dataset to understand structure of the dataset.
 -   SQL Code: 
@@ -44,6 +49,7 @@ The first few rows of the dataset provide a snapshot of the structure and type o
 SELECT * FROM layoffs_data;
 ```
 - **Result**: Raw data displayed, identifing the structure and content of the dataset.
+
 
 ### Step 2: Create a Copy to work on 
 - **Goal**: Protect the original data before cleaning.
@@ -56,6 +62,8 @@ LIKE layoffs_data;
 INSERT layoffs_clean
 SELECT * FROM layoffs_data;
 ```
+
+
 ### Step 3: Check for duplicate records 
 - **Goal**:
 - SQL Code
@@ -69,6 +77,7 @@ SELECT * FROM CTE_layoffs_clean
 WHERE row_num > 1;
 ```
 - **Result**: Confirmed that no duplcate entries existed in this dataset
+
 
 ### Step 4: Standardizing Text Columns
 - **Goal**: To remove extra spaces from all the text column
@@ -84,6 +93,7 @@ SET company = TRIM(company),
     List_of_Employees_Laid_Off = TRIM(List_of_Employees_Laid_Off);
 ```
 - **Result**:
+
 
 ### Step 5 : Handling missing and blank values 
 - **Goal**: To replace all empty or blank cells with null values in columns with missing and blank values for consistency and accurate analysis 
@@ -135,9 +145,10 @@ MODIFY COLUMN Date_Added DATETIME;
 ```
 - **Result**
 
+
 ### Step 7 : Reviewing and correcting misspellings 
 - **Goal**:
-- SQL Code
+- SQL Codes to 
 ```sql
 SELECT DISTINCT(company) FROM layoffs_clean
 ORDER BY 1;
@@ -150,26 +161,99 @@ ORDER BY 1;
 SELECT DISTINCT(country) FROM layoffs_clean
 ORDER BY 1;
 ```
+- SQL Codes to to identify similr inconsistent entries
+```sql
+SELECT * FROM layoffs_clean
+WHERE Company like 'Ada%' and industry = 'Support';
+```
+```sql
+SELECT * FROM layoffs_clean
+WHERE Company like 'Air%';
+```
+```sql
+SELECT * FROM layoffs_clean
+WHERE Company like 'Apollo%';
+```
+```sql
+SELECT * FROM layoffs_clean
+WHERE Company like 'Bolt%';
+```
+```sql
+SELECT * FROM layoffs_clean
+WHERE Company like 'connect%';
+```
+- SQL Code to correct detected misspelings for uniformity
+```sql 
+UPDATE layoffs_clean
+SET Company = 'Ada Support' 
+WHERE Company LIKE 'Ada%' AND industry = 'Support';
+```
 - **Result**
 
-### Step : 
+
+### **EXPLORATORY DATA ANALYSIS (EDA)**
+### Step 1: Quick overview of table structure 
 - **Goal**:
 - SQL Code
-```
+```sql
+DESCRIBE layoffs_clean;
 ```
 - **Result**
 
-### Step : 
+### Step 2: Summary statistics for numerical columns
 - **Goal**:
-- SQL Code
+- SQL Codes
+```sql
+SELECT 
+	COUNT(*) AS total_records,
+    COUNT(DISTINCT `Laid_Off_Count`) AS unique_values,
+    MIN(Laid_Off_Count) AS min_laid_off,
+    MAX(Laid_Off_Count) AS max_laid_off,
+	AVG(Laid_Off_Count) AS avg_laid_off,
+	SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean;
 ```
+```sql
+SELECT 
+	COUNT(*) AS total_records,
+    COUNT(DISTINCT percentage) AS unique_values,
+    MIN(percentage) AS min_percentage,
+    MAX(percentage) AS max_percentage,
+	AVG(percentage) AS avg_percentage
+FROM layoffs_clean;
 ```
+```sql
+SELECT 
+	COUNT(*) AS total_records,
+    COUNT(DISTINCT Funds_Raised) AS unique_values,
+    MIN(Funds_Raised) AS min_fund_raised,
+    MAX(Funds_Raised) AS max_fund_raised,
+	AVG(Funds_Raised) AS avg_fund_raised
+FROM layoffs_clean;
+```
+
 - **Result**
 
-### Step : 
+### Step 2 : Summary statistics for categorical columns
 - **Goal**:
-- SQL Code
+- SQL Codes
+```sql
+SELECT company, COUNT(*) AS frequency
+FROM layoffs_clean
+GROUP BY company
+ORDER BY frequency DESC;
 ```
+```sql
+SELECT country, COUNT(*) AS frequency
+FROM layoffs_clean
+GROUP BY country
+ORDER BY frequency DESC;
+```
+```sql
+SELECT stage, COUNT(*) AS frequency
+FROM layoffs_clean
+GROUP BY stage
+ORDER BY frequency DESC;
 ```
 - **Result**
 
