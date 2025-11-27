@@ -62,6 +62,7 @@ LIKE layoffs_data;
 INSERT layoffs_clean
 SELECT * FROM layoffs_data;
 ```
+- **Result**: A new copy 'layoff_clean' was created for analysis
 
 
 ### Step 3: Check for duplicate records 
@@ -92,8 +93,7 @@ SET company = TRIM(company),
     `Source` = TRIM( `Source`),
     List_of_Employees_Laid_Off = TRIM(List_of_Employees_Laid_Off);
 ```
-- **Result**:
-
+- **Result**: All unnecessary spaces were successfully removed from the selected text columns, ensuring consistent formatting and improving the reliability of downstream analysis.
 
 ### Step 5 : Handling missing and blank values 
 - **Goal**: To replace all empty or blank cells with null values in columns with missing and blank values for consistency and accurate analysis 
@@ -113,10 +113,10 @@ UPDATE layoffs_clean
 SET percentage = null
 wHERE percentage = '';
 ```
-- **Result**:
+- **Result**: All identified blank or empty entries were successfully updated to NULL, making the dataset cleaner, more structured, and easier to work with during querying and analysis.
 
 ### Step 6: Correcting Data types for all columns
-- **Goal**:
+- **Goal**: To ensure that every column in the dataset was assigned the appropriate data type for accurate computation, proper filtering, and reliable analysis.
 - SQL Code to Identify data type for all columns
 ```sql
 DESCRIBE layoffs_clean;
@@ -143,12 +143,12 @@ MODIFY COLUMN Country VARCHAR(100),
 MODIFY COLUMN List_of_Employees_Laid_Off VARCHAR(255),
 MODIFY COLUMN Date_Added DATETIME;
 ```
-- **Result**
+- **Result**: All columns were successfully converted to their correct data types. This correction improved the dataset’s integrity and ensured that subsequent analysis could be performed without errors or inconsistencies.
 
 
 ### Step 7 : Reviewing and correcting misspellings 
-- **Goal**:
-- SQL Codes to 
+- **Goal**: To identify and correct any misspelled entries in the text-based columns, ensuring consistency and accuracy across the dataset.
+- SQL Codes to review distinct values in key text columns
 ```sql
 SELECT DISTINCT(company) FROM layoffs_clean
 ORDER BY 1;
@@ -188,7 +188,7 @@ UPDATE layoffs_clean
 SET Company = 'Ada Support' 
 WHERE Company LIKE 'Ada%' AND industry = 'Support';
 ```
-- **Result**
+- **Result**: Reviewed distinct values in key text columns and used pattern-matching techniques (including the LIKE operator) to detect similar but inconsistent entries. After careful validation, all identified misspellings and inconsistencies were corrected, resulting in cleaner and more reliable categorical data.
 
 
 ### **EXPLORATORY DATA ANALYSIS (EDA)**
@@ -230,8 +230,15 @@ SELECT
 	AVG(Funds_Raised) AS avg_fund_raised
 FROM layoffs_clean;
 ```
+- **INSIGHT**: The dataset contains 3,642 records capturing global layoff events.
 
-- **INSIGHT**
+Total Laid-Off Employees: Layoffs range from 3 to 14,000 employees, with an average of ~258, showing that most reductions are moderate but some are very large. In total, 616,186 employees were affected.
+
+Percentage of Workforce Laid Off: The layoff percentage ranges from 0% to 100%, with an average of ~28%, highlighting that companies vary greatly in how much of their workforce they reduce. Some records are missing, reflecting incomplete reporting.
+
+Funds Raised: Funding varies from 0 to 121,900 (currency not specified), with some missing values. This provides context for understanding layoffs relative to company financial backing.
+
+Overall, the summary statistics give a clear picture of the scale and variability of layoffs, the percentage impact on workforces, and the financial context across companies.
 
 ### Step 3 : Summary statistics for categorical columns
 - **Goal**:
