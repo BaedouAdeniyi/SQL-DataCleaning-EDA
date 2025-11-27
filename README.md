@@ -193,14 +193,14 @@ WHERE Company LIKE 'Ada%' AND industry = 'Support';
 
 ### **EXPLORATORY DATA ANALYSIS (EDA)**
 ### Step 1: Quick overview of table structure 
-- **Goal**:
+- **Goal**: To examine the structure of the dataset, including column names, data types, and overall layout, ensuring familiarity with the data before starting cleaning and analysis
 - SQL Code
 ```sql
 DESCRIBE layoffs_clean;
 ```
 
 ### Step 2: Summary statistics for numerical columns
-- **Goal**:
+- **Goal**: To summarize key numerical columns — total layoffs, percentage affected, and funds raised — using metrics like minimum, maximum, and average, in order to understand the scale and variability of workforce reductions.
 - SQL Codes
 ```sql
 SELECT 
@@ -261,10 +261,10 @@ FROM layoffs_clean
 GROUP BY stage
 ORDER BY frequency DESC;
 ```
-- **INSIGHT**
+- **INSIGHT**: The top companies with the most layoffs are Google and Amazon, each with 12 recorded events, while most companies appear only once. Layoffs are concentrated in the United States, with fewer events in other countries. By company stage, Post-IPO companies and those with unknown stages experienced the majority of layoffs, suggesting that mature or unreported-stage companies face the highest workforce reductions.
 
 ### Step 4 : Missing data overview 
-- **Goal**:
+- **Goal**: To assess the completeness of the dataset by identifying columns with missing or null values. This helps understand potential gaps in the data and informs how missing information may impact subsequent analysis.
 - SQL Code
 ```sql
 SELECT 
@@ -305,11 +305,11 @@ SELECT
 		END) AS missing_date
 FROM layoffs_clean;
 ```
-- **INSIGHT**
+- **INSIGHT**: A significant portion of the numerical data is missing, especially in the layoff count(1,253 records) and percentage column(1,300 records). This highlights areas where reporting was incomplete or unavailable, which may affect certain analyses. The text columns, by contrast, are complete, providing reliable categorical information for grouping, filtering, and trend analysis.
 
 
 ### Step 5: Frequency analysis & grouping
-- **Goal**:
+- **Goal**: To identify the most common companies, countries, and industries affected by layoffs by examining the top frequency counts in each categorical column. This helps highlight where layoffs are concentrated and reveals patterns across organizations, regions, and sectors.
 - SQL Code for top 10 companies by total layoffs
 ```sql
 SELECT Company, SUM(Laid_Off_Count) AS total_laid_off
@@ -335,10 +335,19 @@ ORDER BY total_laid_off DESC
 LIMIT 10;
 
 ```
-- **INSIGHT**
+- **INSIGHT**: As part of the exploratory data analysis, we examined the top 10 values for key categorical columns — company, country, and industry — to understand where layoffs are concentrated.
+  - Top Companies by Layoffs:
+    The companies with the most reported layoffs include Amazon (27,840), Meta (21,000), Tesla (14,500), Microsoft (14,058), and Google (13,472).
+Insight: Layoffs are concentrated in large, well-known tech companies, indicating that high-profile firms experienced the largest workforce reductions in absolute numbers.
+  - Top Countries by Layoffs:
+    The majority of layoffs occurred in the United States (414,013), followed by India (51,234), Germany (26,353), United Kingdom (19,769), and Netherlands (18,445).
+Insight: Layoffs are heavily skewed toward the U.S., reflecting either the size of the workforce, the number of companies reporting, or both. Other countries show smaller but notable layoff events, highlighting regional trends.
+  - Top Industries by Layoffs:
+    The industries with the most layoffs include Retail (70,157), Consumer (67,675), Transportation (59,417), Other (59,261), and Food (45,625).
+Insight: Layoffs are concentrated in sectors like retail, consumer goods, and transportation, which may indicate industry-specific challenges or trends affecting workforce reductions.
 
 ### Step 6:  Data anaylsis (Layoff date)
-- **Goal**:
+- **Goal**: To analyze layoff events over time, examining trends by year and month, and calculating cumulative monthly layoffs to understand how workforce reductions accumulate over time.
 - SQL Code for layoff per year
 ```sql
 SELECT YEAR(`Date`) AS year, SUM(Laid_Off_Count) AS total_laid_off
@@ -362,13 +371,18 @@ FROM layoffs_clean
 GROUP BY YEAR(`Date`), MONTH(`Date`)
 ORDER BY 1
 )
-SELECT *, SUM(total_laid_off) OVER(ORDER BY `year`, `month_num` )
+SELECT *, SUM(total_laid_off) OVER(ORDER BY `year`, `month_num` ) AS cummulative_laid_off
 FROM layoffs_clean_CTE;
 ```
 - **INSIGHT**
+  - Yearly Trends: Layoffs fluctuate significantly across years. The largest number of layoffs occurred in 2023 (263,180), followed by 2022 (165,269) and 2024 (90,916 so far). Surprisingly, 2020 — the year COVID-19 began — does not have the highest layoffs, which could indicate either underreporting in the dataset or that post-pandemic economic adjustments led to more workforce reductions in later years.
+  - Monthly Trends: Layoffs vary month to month within each year. For example, in 2023, the highest monthly layoffs were in January (89,709), while the lowest were in September (4,707). This demonstrates seasonal or event-driven fluctuations in workforce reductions.
+  - Cumulative Trends: By calculating cumulative monthly layoffs, we track the total workforce reductions over time. As of June 2024, a total of 616,186 employees have been laid off across all recorded events, showing a clear upward accumulation of layoffs.
+- **Key Takeaway**
+The data highlights both short-term spikes in layoffs and long-term accumulation, revealing that layoffs are influenced by multiple factors which includes industry trends, economic shifts, and post-pandemic adjustments, rather than the pandemic alone.
 
 ### Step 7: Outlier detection
-- **Goal**: Unusally high single laid off count
+- **Goal**: To identify unusually high layoff events, defined as single layoffs greater than 5,000 employees, in order to highlight extreme workforce reductions.
 - SQL Code
 ```sql
  SELECT * 
@@ -376,7 +390,7 @@ FROM layoffs_clean_CTE;
  WHERE Laid_Off_Count > 5000
  ORDER BY Laid_Off_CounT DESC;
 ```
-- **INSIGHT**
+- **INSIGHT**: Outliers include major companies like Amazon, Google, Meta, Tesla, Microsoft, primarily in the United States across industries such as Retail, Consumer, Transportation, and Technology. These events indicate significant organizational or industry-level workforce changes.
 
 ### Step :
 - **Goal**:
