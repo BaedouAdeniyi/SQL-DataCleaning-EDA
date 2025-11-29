@@ -1,5 +1,12 @@
 # Data Cleaning and Exploratory Data Analysis on Layoff Dataset
 
+
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Tools and Technologies](#tools-and-technologies)
+- [Conclusion](#conclusion)
+
 ## Project Description
 This project demonstrates the process of cleaning and analyzing a dataset containing employee layoff information across various companies and countries. It includes SQL workflows for data cleaning, handling missing values, standardizing text and numeric columns, and performing exploratory data analysis (EDA) to uncover trends by company, industry, and country.
 
@@ -245,7 +252,7 @@ Funds Raised: Funding varies from 0 to 121,900 (currency not specified), with so
 Overall, the summary statistics give a clear picture of the scale and variability of layoffs, the percentage impact on workforces, and the financial context across companies.
 
 ### Step 3 : Summary statistics for categorical columns
-- **Goal**:
+- **Goal**: To summarize the key categorical columns in the dataset—such as company, country, industry, stage, and HQ location by counting the occurrences of each unique value, in order to understand the distribution and identify patterns across these categories.
 - SQL Codes
 ```sql
 SELECT company, COUNT(*) AS frequency
@@ -271,7 +278,7 @@ FROM layoffs_clean
 GROUP BY stage
 ORDER BY frequency DESC;
 ```
-- **INSIGHT**: The top companies with the most layoffs are Google and Amazon, each with 12 recorded events, while most companies appear only once. Layoffs are concentrated in the United States, with fewer events in other countries. By company stage, Post-IPO companies and those with unknown stages experienced the majority of layoffs, suggesting that mature or unreported-stage companies face the highest workforce reductions.
+- **INSIGHT**: Most layoffs in the dataset are concentrated among a few companies and locations. Google and Amazon top the list with 12 records each, while most companies appear only once. The United States dominates the country-wise distribution, followed by India, Canada, the UK, and Germany. Layoffs span all company stages, with Post-IPO firms reporting the most, followed by Series B, Series C, and Unknown stages. Looking at headquarters, major tech hubs stand out: SF Bay Area, New York City, Boston, Bengaluru, Los Angeles, and Seattle, with London and Tel Aviv also featuring. Overall, layoffs are heavily concentrated in U.S.-based companies and tech hubs, though select international cities are also impacted.
 
 ### Step 4 : Missing data overview 
 - **Goal**: To assess the completeness of the dataset by identifying columns with missing or null values. This helps understand potential gaps in the data and informs how missing information may impact subsequent analysis.
@@ -367,6 +374,8 @@ Insight: Layoffs are heavily skewed toward the U.S., reflecting either the size 
   - Top Industries by Layoffs:
     The industries with the most layoffs include Retail (70,157), Consumer (67,675), Transportation (59,417), Other (59,261), and Food (45,625).
 Insight: Layoffs are concentrated in sectors like retail, consumer goods, and transportation, which may indicate industry-specific challenges or trends affecting workforce reductions.
+  - Top HQ_location by Layoffs: 
+    The largest layoffs are concentrated in major headquarters locations. The SF Bay Area leads by a wide margin with 184,151 layoffs, followed by Seattle (53,562), New York City (35,829), and Austin (33,545). Bengaluru (30,207), London (19,451), Amsterdam (18,065), Boston (16,591), Berlin (13,786), and Stockholm (13,692) complete the top ten. This highlights that U.S. tech hubs dominate layoff counts, while select international cities also face significant workforce reductions.
 
 ### Step 6:  Data anaylsis (Layoff date)
 - **Goal**: To analyze layoff events over time, examining trends by year and month, and calculating cumulative monthly layoffs to understand how workforce reductions accumulate over time.
@@ -407,16 +416,52 @@ The data highlights both short-term spikes in layoffs and long-term accumulation
 - **Goal**: To identify unusually high layoff events, defined as single layoffs greater than 5,000 employees, in order to highlight extreme workforce reductions.
 - SQL Code
 ```sql
- SELECT * 
- FROM layoffs_clean
- WHERE Laid_Off_Count > 5000
- ORDER BY Laid_Off_CounT DESC;
+ SELECT `type`, `value`, frequency
+ FROM
+ (
+ select 'company' AS `type`,
+		Company AS `value`,
+        count(*) as frequency
+  from layoffs_clean
+ where Laid_Off_Count> 5000
+ group by company
+ 
+  union all
+  
+  select 'country' AS `type`,
+		Country AS `value`,
+        count(*) as frequency
+  from layoffs_clean
+ where Laid_Off_Count> 5000
+ group by country
+ 
+ union all 
+ 
+ select 'industry' AS `type`,
+		Industry AS `value`,
+        count(*) as frequency
+  from layoffs_clean
+ where Laid_Off_Count> 5000
+ group by industry
+ 
+ union all
+ 
+ select 'Location_HQ' AS `type`,
+		Location_HQ AS `value`,
+        count(*) as frequency
+  from layoffs_clean
+ where Laid_Off_Count> 5000
+ group by Location_HQ
+ ) as combined
+order by `type`, frequency desc;
 ```
-- **INSIGHT**: Outliers include major companies like Amazon, Google, Meta, Tesla, Microsoft, primarily in the United States across industries such as Retail, Consumer, Transportation, and Technology. These events indicate significant organizational or industry-level workforce changes.
+- **INSIGHT**:There are 15 records where layoffs exceeded 5,000 employees. Amazon leads with 3 such occurrences, followed by Dell and Meta with 2 each. Other companies include Tesla, SAP, Flink, Ericsson, Philips, Google, Microsoft, and Salesforce. Most of these high layoffs occurred in the United States (11), with Germany (2), Sweden (1), and the Netherlands (1) also represented. By industry, Retail, Consumer, and “Other” dominate. The top headquarters affected are Seattle and SF Bay Area (4 each), followed by Austin (3), with Walldorf, Berlin, Stockholm, and Amsterdam also impacted.
 
-### Step :
-- **Goal**:
+## Conclusion
+This project demonstrates the full lifecycle of working with a real-world dataset using SQL, from data cleaning to exploratory analysis. Through systematic cleaning, I ensured that all numeric, text, and date columns were properly formatted, missing or blank values were handled consistently, and potential inconsistencies and outliers were identified and corrected.
 
+The exploratory analysis provided insights into global layoff trends across companies, industries, countries, and headquarters locations. Key observations include the variation in layoffs over time, identification of unusually high layoff events, and patterns in workforce reductions across sectors and geographies.
 
+By combining SQL queries with thoughtful interpretation, this project showcases not only technical proficiency in SQL but also the ability to derive meaningful insights from raw data. This foundation can be further expanded with advanced analytics or visualization tools for deeper business insights.
 
 
