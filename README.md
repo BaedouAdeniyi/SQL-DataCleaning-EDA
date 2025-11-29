@@ -4,6 +4,12 @@
 ## Table of Contents
 
 - [Project Description](#project-description)
+- [Data Source](#data-source)
+- [Dataset Overview](#dataset-overview)
+- [Project Objectives](#project-objectives)
+- [Project Workflow](#project-workflow)
+  - [DATA CLEANING PROCESS](#data-cleaning-process)
+  - [EXPLORATORY DATA ANALYSIS (EDA)](#exploratory-data-analysis-(eda)) 
 - [Tools and Technologies](#tools-and-technologies)
 - [Conclusion](#conclusion)
 
