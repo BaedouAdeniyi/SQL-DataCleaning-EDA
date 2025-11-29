@@ -161,6 +161,10 @@ ORDER BY 1;
 SELECT DISTINCT(country) FROM layoffs_clean
 ORDER BY 1;
 ```
+```sql
+SELECT DISTINCT(Location_HQ) FROM layoffs_clean
+ORDER BY 1;
+```
 - SQL Codes to to identify similr inconsistent entries
 ```sql
 SELECT * FROM layoffs_clean
@@ -256,6 +260,12 @@ GROUP BY country
 ORDER BY frequency DESC;
 ```
 ```sql
+SELECT Location_HQ, COUNT(*) AS frequency
+FROM layoffs_clean
+GROUP BY Location_HQ
+ORDER BY frequency DESC;
+```
+```sql
 SELECT stage, COUNT(*) AS frequency
 FROM layoffs_clean
 GROUP BY stage
@@ -297,7 +307,12 @@ SELECT
 		CASE 
 			WHEN country IS NULL THEN 1 
             ELSE 0
-		END) AS country,
+		END) AS missing_country,
+	SUM(
+		CASE 
+			WHEN Location_HQ IS NULL THEN 1 
+            ELSE 0
+		END) AS missing_location_hq,
 	SUM(
 		CASE 
 			WHEN `Date` IS NULL THEN 1 
@@ -333,7 +348,14 @@ FROM layoffs_clean
 GROUP BY Industry
 ORDER BY total_laid_off DESC
 LIMIT 10;
-
+```
+- SQL Code for top 10 Location_hq by total layoffs
+```sql
+SELECT location_hq, SUM(Laid_Off_Count) AS total_laid_off
+FROM layoffs_clean
+GROUP BY location_hq
+ORDER BY total_laid_off DESC
+LIMIT 10;
 ```
 - **INSIGHT**: As part of the exploratory data analysis, we examined the top 10 values for key categorical columns — company, country, and industry — to understand where layoffs are concentrated.
   - Top Companies by Layoffs:
