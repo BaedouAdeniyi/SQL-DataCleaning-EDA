@@ -9,7 +9,7 @@
 - [Project Objectives](#project-objectives)
 - [Project Workflow](#project-workflow)
   - [Data Cleaning Process](#data-cleaning-process)
-  - [Exploratoty Data Analysis (EDA) With Insights](#exploratory-data-analysis-eda-with-insights) 
+  - [Exploratory Data Analysis (EDA) With Insights](#exploratory-data-analysis-eda-with-insights) 
 - [Tools and Technologies](#tools-and-technologies)
 - [Conclusion](#conclusion)
 
@@ -209,7 +209,8 @@ WHERE Company LIKE 'Ada%' AND industry = 'Support';
 - **Result**: Reviewed distinct values in key text columns and used pattern-matching techniques (including the LIKE operator) to detect similar but inconsistent entries. After careful validation, all identified misspellings and inconsistencies were corrected, resulting in cleaner and more reliable categorical data.
 
 
-### **Exploratoty Data Analysis (EDA) With Insights**
+### **Exploratory Data Analysis (EDA) With Insights**
+
 ### Step 1: Quick overview of table structure 
 - **Goal**: To examine the structure of the dataset, including column names, data types, and overall layout, ensuring familiarity with the data before starting cleaning and analysis
 - SQL Code
