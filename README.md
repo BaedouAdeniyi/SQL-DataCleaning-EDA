@@ -8,8 +8,8 @@
 - [Dataset Overview](#dataset-overview)
 - [Project Objectives](#project-objectives)
 - [Project Workflow](#project-workflow)
-  - [DATA CLEANING PROCESS](#data-cleaning-process)
-  - [EXPLORATORY DATA ANALYSIS (EDA)](#exploratory-data-analysis-eda) 
+  - [Data Cleaning Process](#data-cleaning-process)
+  - [Exploratoty Data Analysis (EDA) With Insights](#exploratory-data-analysis-eda-with-insights) 
 - [Tools and Technologies](#tools-and-technologies)
 - [Conclusion](#conclusion)
 
@@ -54,7 +54,8 @@ The first few rows of the dataset provide a snapshot of the structure and type o
 
 
 ## Project Workflow
-### **DATA CLEANING PROCESS**
+### **Data Cleaning Process**
+
 ### Step 1: View Raw Dataset
 - **Goal:** Inspect the dataset to understand structure of the dataset.
 -   SQL Code: 
@@ -208,7 +209,7 @@ WHERE Company LIKE 'Ada%' AND industry = 'Support';
 - **Result**: Reviewed distinct values in key text columns and used pattern-matching techniques (including the LIKE operator) to detect similar but inconsistent entries. After careful validation, all identified misspellings and inconsistencies were corrected, resulting in cleaner and more reliable categorical data.
 
 
-### **EXPLORATORY DATA ANALYSIS (EDA)**
+### **Exploratoty Data Analysis (EDA) With Insights**
 ### Step 1: Quick overview of table structure 
 - **Goal**: To examine the structure of the dataset, including column names, data types, and overall layout, ensuring familiarity with the data before starting cleaning and analysis
 - SQL Code
